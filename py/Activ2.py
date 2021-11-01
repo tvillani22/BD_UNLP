@@ -3,94 +3,94 @@ from pyspark.sql import SQLContext, Row, SparkSession, functions as F
 #########---------------------------FUNCIONES--------------------------#########
 #########----------------------------INCISO 1--------------------------#########
 def dni_madre(df, dni):
-  '''Devuelve el dni de la madre.
+    '''Devuelve el dni de la madre.
 
-  PARÁMETROS:
-  df: Pyspark Dataframe
-  dni: int
-  -----------
-  RETORNA:
-  out: int o None
+    PARÁMETROS:
+    df: Pyspark Dataframe
+    dni: int
+    -----------
+    RETORNA:
+    out: int o None
     dni de la madre si ese dato está en el dataset. None, en caso contrario.
-  '''
-  res = df.filter(df.dni == dni).collect()
-  if len(res) == 0:
-    print(f'El DNI {dni} no está registrado en el dataset.', end=' ')
-    return
-  return res[0]['dni_madre']
+    '''
+    res = df.filter(df.dni == dni).collect()
+    if len(res) == 0:
+        print(f'El DNI {dni} no está registrado en el dataset.', end=' ')
+        return
+    return res[0]['dni_madre']
 
 
 def son_primos(df, i1, i2):
-  '''Dados dos dni determina, si es posible, si son primos.
+    '''Dados dos dni determina, si es posible, si son primos.
 
-  PARÁMETROS:
-  df: Pyspark Dataframe
-  i1: int
-  i2: int
-  -----------
-  RETORNA:
-  out: bool o None
+    PARÁMETROS:
+    df: Pyspark Dataframe
+    i1: int
+    i2: int
+    -----------
+    RETORNA:
+    out: bool o None
     bool si es posible determinarlo con el dataset. None, en caso contrario.
-  '''
-  dni_m1, dni_m2 = dni_madre(df, i1), dni_madre(df, i2)
-  if dni_m1 is None and dni_m2 is None:
-    print(f'Con la información disponible, no es posible conocer la relación entre {i1} y {i2}.')
-    return 
+    '''
+    dni_m1, dni_m2 = dni_madre(df, i1), dni_madre(df, i2)
+    if dni_m1 is None and dni_m2 is None:
+        print(f'Con la información disponible, no es posible conocer la relación entre {i1} y {i2}.')
+        return 
 
-  if None in [dni_m1, dni_m2]:
-    dni =  dni_m1 if dni_m1 is not None else dni_m2
-    if dni_madre(df, dni) is None:
-      print(f'Y como el otro individuo no tiene abuela registrada, no es '
-            f'posible conocer la relación entre {i1} y {i2}.')
-      return
-    else: 
-      print(f'Pero como el otro individuo tiene abuela registrada, los '
-            f'individuos {i1} y {i2} no son primos ni hermanos.')
-      return False
+    if None in [dni_m1, dni_m2]:
+        dni =  dni_m1 if dni_m1 is not None else dni_m2
+        if dni_madre(df, dni) is None:
+            print(f'Y como el otro individuo no tiene abuela registrada, no es '
+                  f'posible conocer la relación entre {i1} y {i2}.')
+            return
+        else: 
+            print(f'Pero como el otro individuo tiene abuela registrada, los '
+                  f'individuos {i1} y {i2} no son primos ni hermanos.')
+            return False
   
-  if dni_m1 == dni_m2:
-    print(f'Los individuos {i1} y {i2} no son primos, pero son hermanos.')
+    if dni_m1 == dni_m2:
+        print(f'Los individuos {i1} y {i2} no son primos, pero son hermanos.')
+        return False
+  
+    dni_a1, dni_a2 = dni_madre(df, dni_m1), dni_madre(df, dni_m2)
+    if dni_a1 is None and dni_a2 is None:
+        print(f'Con la información disponible, no es posible conocer la relación entre {i1} y {i2}.')
+        return 
+    if dni_a1 == dni_a2:
+        print(f'Los individuos {i1} y {i2} son primos.')
+        return True
+    print(f'Los individuos {i1} y {i2} no son primos ni hermanos.')
     return False
-  
-  dni_a1, dni_a2 = dni_madre(df, dni_m1), dni_madre(df, dni_m2)
-  if dni_a1 is None and dni_a2 is None:
-    print(f'Con la información disponible, no es posible conocer la relación entre {i1} y {i2}.')
-    return 
-  if dni_a1 == dni_a2:
-    print(f'Los individuos {i1} y {i2} son primos.')
-    return True
-  print(f'Los individuos {i1} y {i2} no son primos ni hermanos.')
-  return False
 
 
 #########----------------------------INCISO 2--------------------------#########
 def es_ancestro(df, dni1 , dni2):
-  '''Determina si un indivuo es ancestro de otro.
+    '''Determina si un indivuo es ancestro de otro.
 
-  PARÁMETROS:
-  df : Pyspark Dataframe
-  dni1 : int
-  dni2 : int
-  -----------
-  RETORNA:
-  out: bool
+    PARÁMETROS:
+    df : Pyspark Dataframe
+    dni1 : int
+    dni2 : int
+    -----------
+    RETORNA:
+    out: bool
     True si el individuo de dni1 es ancestro del de dni2. False en caso contrario.
-  '''
-  ancestros = []
-  dni = dni2
-  while True:
-    dni_m = dni_madre(df, dni)
-    if dni_m is None:
-      break
-    else:
-      ancestros.append(dni_m)
-      dni = dni_m
-  if dni1 in ancestros:
-    print(f'El individuo de dni {dni1} es ancestro del de dni {dni2}.')
-    return True
-  else:
-    print(f'El individuo de dni {dni1} no es ancestro del de dni {dni2}.')
-    return False
+    '''
+    ancestros = []
+    dni = dni2
+    while True:
+        dni_m = dni_madre(df, dni)
+        if dni_m is None:
+            break
+        else:
+            ancestros.append(dni_m)
+            dni = dni_m
+        if dni1 in ancestros:
+            print(f'El individuo de dni {dni1} es ancestro del de dni {dni2}.')
+            return True
+        else:
+            print(f'El individuo de dni {dni1} no es ancestro del de dni {dni2}.')
+            return False
 
 
 #########----------------------------INCISO 3--------------------------#########
