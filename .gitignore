@@ -1,4 +1,4 @@
 /B*
 MRE.py
 .*
-!/.gitignore
+__*
