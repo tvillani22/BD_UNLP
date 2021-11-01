@@ -2,20 +2,12 @@
  Notebooks de actividades a entregar.
 
 ### Actividad 1
-[![nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.jupyter.org/github/tvillani22/BD_UNLP/blob/WIP/Notebooks/Actividad1.ipynb?flush_cache=true)
+[![nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://github.com/tvillani22/BD_UNLP/blob/master/Notebooks/Actividad1.ipynb?flush_cache=true)
 
-[//]: <> (https://nbviewer.jupyter.org/github/tvillani22/PSeI/blob/master/TV_Modulo1.ipynb?flush_cache=true)
-
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tvillani22/BD_UNLP/blob/WIP/Notebooks/Actividad1.ipynb)
-
-[//]: <> (https://colab.research.google.com/github/tvillani22/PSei/blob/master/TV_Modulo1.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://github.com/tvillani22/BD_UNLP/blob/master/Notebooks/Actividad1.ipynb)
 
 
 ### Actividad 2
-[![nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.jupyter.org/github/tvillani22/BD_UNLP/blob/WIP/Notebooks/Actividad2.ipynb?flush_cache=true)
+[![nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://github.com/tvillani22/BD_UNLP/blob/master/Notebooks/Actividad2.ipynb?flush_cache=true)
 
-[//]: <> (https://nbviewer.jupyter.org/github/tvillani22/PSeI/blob/master/TV_Modulo2.ipynb?flush_cache=true)
-
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tvillani22/BD_UNLP/blob/WIP/Notebooks/Actividad2.ipynb)
-
-[//]: <> (https://colab.research.google.com/github/tvillani22/PSei/blob/master/TV_Modulo2.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://github.com/tvillani22/BD_UNLP/blob/master/Notebooks/Actividad2.ipynb)
