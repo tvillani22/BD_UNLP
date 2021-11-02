@@ -85,12 +85,12 @@ def es_ancestro(df, dni1 , dni2):
         else:
             ancestros.append(dni_m)
             dni = dni_m
-        if dni1 in ancestros:
-            print(f'El individuo de dni {dni1} es ancestro del de dni {dni2}.')
-            return True
-        else:
-            print(f'El individuo de dni {dni1} no es ancestro del de dni {dni2}.')
-            return False
+    if dni1 in ancestros:
+        print(f'El individuo de dni {dni1} es ancestro del de dni {dni2}.')
+        return True
+    else:
+        print(f'El individuo de dni {dni1} no es ancestro del de dni {dni2}.')
+        return False
 
 
 #########----------------------------INCISO 3--------------------------#########
