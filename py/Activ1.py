@@ -94,7 +94,7 @@ def fmap32(key, value, context):
     n_visitas = int(value.split()[1])
     n_usuarios = 1 
     context.write(id_page, (n_visitas, n_usuarios))
-    
+
 def fred32(key, values, context):
     id_page = key
     n_visitas_tot = 0
@@ -104,8 +104,9 @@ def fred32(key, values, context):
         n_usuarios = v[1]
         n_visitas_tot += n_visitas
         n_usuarios_tot += n_usuarios
-    context.write(id_page, (n_visitas_tot, n_usuarios_tot))
-
+    if n_usuarios_tot >= context['usuarios_minimos']:
+        context.write(id_page, (n_visitas_tot, n_usuarios_tot))
+        
 def fmap33(key, value, context):
     id_page = key
     n_visitas_tot = int(value.split()[0])
@@ -116,17 +117,19 @@ def fred33(key, values, context):
     n_visitas_max = 0
     id_page_vmax = None
     n_usuarios_vmax = 0
+    maximos = []
     # output nulo si en combiner ningun input cumple condicion
     for v in values:
         id_page = v[0]
         n_visitas = v[1]
         n_usuarios = v[2]
-        if n_usuarios >= context['usuarios_minimos'] and n_visitas > n_visitas_max:
+        if n_visitas > n_visitas_max:
             n_visitas_max = n_visitas
-            id_page_vmax = id_page
-            n_usuarios_vmax = n_usuarios
-    context.write(99, (id_page_vmax, n_visitas_max, n_usuarios_vmax))
-
+            maximos = [[id_page, n_visitas, n_usuarios]]
+        elif n_visitas == n_visitas_max:
+            maximos.append([id_page, n_visitas, n_usuarios])
+    for maximo in maximos:
+        context.write(99, tuple(maximo))
 
 
 #########--------------------------EJERCICIOS--------------------------#########
@@ -193,27 +196,40 @@ def inciso3(u):
     job.setCombiner(fred)
     job2 = Job(tempDir1, tempDir2, fmap32, fred32)
     job2.setCombiner(fred32)
+    job2.setParams(parametros)
     job3 = Job(tempDir2, outputDir, fmap33, fred33)
     job3.setCombiner(fred33)
-    job3.setParams(parametros)
 
     success = job.waitForCompletion()
+
     if success:
         print('Job 1 completado con éxito.')
         success = job2.waitForCompletion()
+
     if success:
         print('Job 2 completado con éxito.')
         success = job3.waitForCompletion()
+
     if success:
         print('Job 3 completado con éxito.')
-        with open(outputDir + 'output.txt', 'rt') as fh:    
-            linea = next(fh)
-            id_page, n_visitas, n_usuarios = linea.rstrip().split()[1:]
-            if id_page != 'None':
-                print(f'\nRESULTADO \nLa página más visitada, entre aquellas '
-                      f'que fueron visitadas por al menos {U} usuarios, fue '
-                      f'la {id_page}, que fue visitada un total de {n_visitas}'
-                      f' veces, por {n_usuarios} usuarios distintos.') 
+        with open(outputDir + 'output.txt', 'rt') as fh:
+            if fh is not None:
+                num_lineas = len(fh.readlines())
+                fh.seek(0)
+                if num_lineas == 1:
+                    linea = next(fh)
+                    print(f'\nRESULTADO \nLa página más visitada, entre aquellas que fueron '
+                          f'visitadas por al menos {U} usuarios, fue la {id_page}, que fue '
+                          f'visitada un total de {n_visitas} veces, por {n_usuarios} distintos.')
+                elif num_lineas < 5:
+                    print(f'\nRESULTADO \nLas páginas más visitadas, entre aquellas que fueron '
+                          f'visitadas por al menos {U} usuarios, son:\n')
+                    for linea in fh:
+                        id_page, n_visitas, n_usuarios = linea.rstrip().split()[1:]
+                        print(f'id_pag: {id_page}; número de visitas: {n_visitas}; '
+                              f'número de visitas: {n_visitas}; número de usuarios: {n_usuarios}.') 
+                else:
+                    print('Resultado extenso, acceder en el output file.')
             else:
                 print(f'No hay página que haya sido visitada por al menos {U} usuarios.')
 
