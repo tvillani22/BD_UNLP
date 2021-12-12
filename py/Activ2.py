@@ -76,21 +76,18 @@ def es_ancestro(df, dni1 , dni2):
     out: bool
     True si el individuo de dni1 es ancestro del de dni2. False en caso contrario.
     '''
-    ancestros = []
     dni = dni2
     while True:
         dni_m = dni_madre(df, dni)
         if dni_m is None:
             break
         else:
-            if dni1 in ancestros:
+            if dni1 == dni_m:
                 print(f'El individuo de dni {dni1} es ancestro del de dni {dni2}.')
                 return True
-            ancestros.append(dni_m)
             dni = dni_m
     print(f'El individuo de dni {dni1} no es ancestro del de dni {dni2}.')
     return False
-
 
 #########----------------------------INCISO 3--------------------------#########
 def inciso3(df):
