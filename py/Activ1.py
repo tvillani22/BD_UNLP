@@ -58,12 +58,13 @@ def fred13(key, values, context):
 #########----------------------------INCISO 2--------------------------#########
 def fmap22(key, value, context):
     id_user = key
-    id_page = value.split()[0]
-    n_total = value.split()[1]
-    t_total = value.split()[2]            
-    context.write(id_user, (id_page, n_total, t_total))
+    id_page = int(value.split()[0])
+    n_total = int(value.split()[1])
+    t_total = int(value.split()[2])
+    if n_total > context['umbral']: # umbral no incluido
+        context.write(id_user, (id_page, n_total, t_total))
 
-def buscar_maxt(key, values, context):
+def fred22(key, values, context):
     id_user = key
     t_max = 0
     n_tmax = None
@@ -76,16 +77,7 @@ def buscar_maxt(key, values, context):
             t_max = t_total
             id_page_tmax = id_page
             n_tmax = n_total
-    return id_user, (id_page_tmax, n_tmax, t_max)
-
-def fcomb(key, values, context):
-    context.write(buscar_maxt(key, values, context))   
-    
-def fred22(key, values, context):
-    id_user, tup = buscar_maxt(key, values, context)
-    id_page_tmax, n_tmax, t_max = tup
-    if int(n_tmax) > context['visitas_minimas']:
-        context.write(id_user, (id_page_tmax, n_tmax, t_max)) 
+    context.write(id_user, (id_page_tmax, n_tmax, t_max))
 
 #########----------------------------INCISO 3--------------------------#########
 def fmap32(key, value, context):
@@ -161,12 +153,12 @@ def inciso1():
 def inciso2(v):
     outputDir = data_path + "output/output2/"
     V = v  # parámetro de visitas minimas
-    parametros = {'visitas_minimas': V}
+    parametros = {'umbral': V} # umbral no incluido
     job = Job(inputDir, tempDir1, fmap, fred)
     job.setCombiner(fred)
     job2 = Job(tempDir1, outputDir, fmap22, fred22)
     job2.setParams(parametros)
-    job2.setCombiner(fcomb) 
+    job2.setCombiner(fred22)
     success = job.waitForCompletion()
     if success:
         print('Job 1 completado con éxito.')
@@ -242,7 +234,8 @@ def main():
             inciso1()
         elif inciso == '2':
             try:
-                param = int(input('Ingrese número de visitas mínimas: ')) - 1
+                param = int(input('Ingrese número de visitas mínimas: ')) - 1 
+                # corrige x visitas mínimas a umbral no incluido
                 inciso2(param)
             except:
                 print('Parámetro inválido.')
